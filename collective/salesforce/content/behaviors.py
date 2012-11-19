@@ -1,7 +1,7 @@
 from Acquisition import aq_base, aq_inner
 from zope.app.content import queryContentType
-from zope.app.component.hooks import getSite
-from zope.app.container.interfaces import INameChooser
+from bbb import getSite
+from bbb import INameChooser
 from zope.component import adapts
 from zope.interface import implements
 from five import grok
