@@ -9,6 +9,9 @@ Changelog
   index after upgrading from collective.salesforce.behavior.
   [davisagli - 2012-06-18]
 
+* Add support for Plone 4.3
+  [aclark - 2012-11-19]
+
 1.1 (2012-05-08)
 ----------------
 
