@@ -26,6 +26,12 @@ class ISalesforceBehaviorControlPanel(form.Schema):
         required = False,
         )
 
+    ignore_no_container = schema.Bool(
+        title = _(u'Ignore No Container Errors?'),
+        description=_(u'If checked, records whose container cannot be determined will be skipped.'),
+        required=False,
+        )
+
 
 class SalesforceBehaviorControlPanel(AutoExtensibleForm, Form):
     """
@@ -46,5 +52,6 @@ class SalesforceBehaviorControlPanel(AutoExtensibleForm, Form):
         if not ftis:
             self.status = _(u'Please select content types to synchronize.')
             return
-        self.context.restrictedTraverse('@@sf_sync')(types=ftis, sf_object_id=data['sf_object_id'])
+        self.context.restrictedTraverse('@@sf_sync')(types=ftis, sf_object_id=data['sf_object_id'],
+                                                     ignore_no_container=data['ignore_no_container'])
         self.status = _(u'Salesforce synchronization successful.')

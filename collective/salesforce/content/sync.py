@@ -36,7 +36,7 @@ class SFSync(BrowserView):
     Synchronizes Plone objects with their corresponding Salesforce objects.
     """
     
-    def __call__(self, token=None, catch_errors=False, email=None, types=[], sf_object_id=None):
+    def __call__(self, token=None, catch_errors=False, email=None, types=[], sf_object_id=None, ignore_no_container=None):
         """
         Perform the synchronization.
         """
@@ -68,7 +68,7 @@ class SFSync(BrowserView):
                     if query:
                         results = self.getResults(query)
                         if results:
-                            self.syncPloneObjects(fti, results, sf_object_id=sf_object_id)
+                            self.syncPloneObjects(fti, results, sf_object_id=sf_object_id, ignore_no_container=ignore_no_container)
         except:
             # If the catch_errors flag is set, we try to handle the error 
             # gracefully. This is mostly useful when using sf_sync
@@ -131,7 +131,7 @@ class SFSync(BrowserView):
             for result in results:
                 yield result
         
-    def syncPloneObjects(self, fti, records, sf_object_id=None):
+    def syncPloneObjects(self, fti, records, sf_object_id=None, ignore_no_container=None):
         """
         Given the results from Salesforce, update or create the appropriate
         Plone objects.
@@ -165,7 +165,13 @@ class SFSync(BrowserView):
                 notify(ObjectCreatedEvent(obj))
                 sfobj = ISalesforceObject(obj)
                 sfobj.updatePloneObject(record)
-                sfobj.addToContainer()
+                try:
+                    sfobj.addToContainer()
+                except ValueError, e:
+                    if ignore_no_container:
+                        pass
+                    else:
+                        raise e
             
             objects_updated_count += 1
             sfobj.sf_data_digest = digest
